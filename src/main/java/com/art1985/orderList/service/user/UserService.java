@@ -36,7 +36,7 @@ public class UserService implements IService<User> {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
@@ -54,5 +54,10 @@ public class UserService implements IService<User> {
                 .orElseThrow(() -> new UserNotFoundException("No user found with name " + name + " to delete"));
         userRepository.deleteById(user.getId());
         return user;
+    }
+
+    @Override
+    public void update(User user) {
+        userRepository.save(user);
     }
 }
