@@ -28,8 +28,8 @@ public class User {
     @Column(name = "created")
     private LocalDate created;
     @LastModifiedDate
-    @Column(name = "modified")
-    private LocalDate modified;
+    @Column(name = "updated")
+    private LocalDate updated;
 
     public User(String firstName, String lastName, String address, String email) {
         this.firstName = firstName;
@@ -97,12 +97,12 @@ public class User {
         this.created = created;
     }
 
-    public LocalDate getModified() {
-        return modified;
+    public LocalDate getUpdated() {
+        return updated;
     }
 
-    public void setModified(LocalDate modified) {
-        this.modified = modified;
+    public void setUpdated(LocalDate updated) {
+        this.updated = updated;
     }
 
     @Override
@@ -128,11 +128,11 @@ public class User {
                 address.equals(user.address) &&
                 email.equals(user.email) &&
                 created.equals(user.created) &&
-                modified.equals(user.modified);
+                updated.equals(user.updated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, address, email, version, created, modified);
+        return Objects.hash(id, firstName, lastName, address, email, version, created, updated);
     }
 }
