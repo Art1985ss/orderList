@@ -32,12 +32,15 @@ public class Order {
     @Column(name = "created")
     private LocalDate created;
     @LastModifiedDate
-    @Column(name = "modified")
-    private LocalDate modified;
+    @Column(name = "updated")
+    private LocalDate updated;
 
     public Order(String name, User user) {
         this.name = name;
         this.user = user;
+    }
+
+    public Order() {
     }
 
     public Long getId() {
@@ -88,12 +91,12 @@ public class Order {
         this.created = created;
     }
 
-    public LocalDate getModified() {
-        return modified;
+    public LocalDate getUpdated() {
+        return updated;
     }
 
-    public void setModified(LocalDate modified) {
-        this.modified = modified;
+    public void setUpdated(LocalDate updated) {
+        this.updated = updated;
     }
 
     public BigDecimal getTotalPrice() {
@@ -125,11 +128,11 @@ public class Order {
                 user.equals(order.user) &&
                 Objects.equals(productListWithAmount, order.productListWithAmount) &&
                 created.equals(order.created) &&
-                modified.equals(order.modified);
+                updated.equals(order.updated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, user, productListWithAmount, version, created, modified);
+        return Objects.hash(id, name, user, productListWithAmount, version, created, updated);
     }
 }

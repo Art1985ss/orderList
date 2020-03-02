@@ -31,7 +31,7 @@ public class UserService implements IService<User> {
 
     @Override
     public User findByName(String name) {
-        return userRepository.findByName(name)
+        return userRepository.findByLastName(name)
                 .orElseThrow(() -> new UserNotFoundException("No user found with name " + name));
     }
 
@@ -50,7 +50,7 @@ public class UserService implements IService<User> {
 
     @Override
     public User deleteByName(String name) {
-        User user = userRepository.findByName(name)
+        User user = userRepository.findByLastName(name)
                 .orElseThrow(() -> new UserNotFoundException("No user found with name " + name + " to delete"));
         userRepository.deleteById(user.getId());
         return user;

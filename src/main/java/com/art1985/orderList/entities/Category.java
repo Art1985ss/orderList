@@ -1,5 +1,7 @@
 package com.art1985.orderList.entities;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Category {
     VEGETABLES("Vegetables", 0),
     MUSHROOMS("Mushrooms", 1),
@@ -14,6 +16,7 @@ public enum Category {
         this.num = num;
     }
 
+    @JsonValue
     public String getName() {
         return name;
     }

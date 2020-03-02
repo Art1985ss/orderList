@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
+@Table(name = "Products")
 public class Product {
     @Id
     @GeneratedValue
@@ -29,8 +30,8 @@ public class Product {
     @Column(name = "created")
     private LocalDate created;
     @LastModifiedDate
-    @Column(name = "modified")
-    private LocalDate modified;
+    @Column(name = "updated")
+    private LocalDate updated;
 
     public Product(String name, Category category, BigDecimal price, BigDecimal discount) {
         this.id = id;
@@ -40,7 +41,7 @@ public class Product {
         this.discount = discount;
         this.version = 0;
         this.created = LocalDate.now();
-        this.modified = LocalDate.now();
+        this.updated = LocalDate.now();
     }
 
     public Product() {
@@ -102,12 +103,12 @@ public class Product {
         this.created = created;
     }
 
-    public LocalDate getModified() {
-        return modified;
+    public LocalDate getUpdated() {
+        return updated;
     }
 
-    public void setModified(LocalDate modified) {
-        this.modified = modified;
+    public void setUpdated(LocalDate updated) {
+        this.updated = updated;
     }
 
     public BigDecimal getTotalDiscount() {
@@ -141,11 +142,11 @@ public class Product {
                 price.equals(product.price) &&
                 discount.equals(product.discount) &&
                 created.equals(product.created) &&
-                modified.equals(product.modified);
+                updated.equals(product.updated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, category, price, discount, version, created, modified);
+        return Objects.hash(id, name, category, price, discount, version, created, updated);
     }
 }
