@@ -18,11 +18,12 @@ public class Order {
     @Column(name = "name")
     private String name;
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-    @OneToMany
-    @JoinTable(name = "Order_product_list")
-    @JoinColumn(name = "order_id")
+    @ElementCollection
+    @CollectionTable(name = "Order_product_list", joinColumns = @JoinColumn(name = "order_id"))
+    @Column(name = "count")
+    @MapKeyJoinColumn(name = "product_id")
     private Map<Product, Integer> productListWithAmount;
     @Version
     @Column(name = "version")

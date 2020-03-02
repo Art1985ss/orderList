@@ -1,4 +1,5 @@
 package com.art1985.orderList.service;
+
 import java.util.List;
 
 public interface IService<T> {
@@ -8,9 +9,11 @@ public interface IService<T> {
 
     T findByName(String name);
 
-    List<T> getAll();
+    List<T> findAll();
 
     T deleteById(Long id);
 
     T deleteByName(String name);
+
+    void update(T t);
 }

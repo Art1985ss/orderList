@@ -36,7 +36,7 @@ public class OrderService implements IService<Order> {
     }
 
     @Override
-    public List<Order> getAll() {
+    public List<Order> findAll() {
         return orderRepository.findAll();
     }
 
@@ -54,5 +54,10 @@ public class OrderService implements IService<Order> {
                 .orElseThrow(() -> new OrderNotFoundException("Order not found with name " + name + " to delete"));
         orderRepository.deleteById(order.getId());
         return order;
+    }
+
+    @Override
+    public void update(Order order) {
+        orderRepository.save(order);
     }
 }

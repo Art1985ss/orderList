@@ -36,7 +36,7 @@ public class ProductService implements IService<Product> {
     }
 
     @Override
-    public List<Product> getAll() {
+    public List<Product> findAll() {
         return productRepository.findAll();
     }
 
@@ -54,5 +54,10 @@ public class ProductService implements IService<Product> {
                 .orElseThrow(() -> new ProductNotFoundException("No product found with name " + name + " to delete"));
         productRepository.deleteById(product.getId());
         return product;
+    }
+
+    @Override
+    public void update(Product product) {
+        productRepository.save(product);
     }
 }
