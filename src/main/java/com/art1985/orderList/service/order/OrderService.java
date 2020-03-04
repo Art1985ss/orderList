@@ -60,4 +60,8 @@ public class OrderService implements IService<Order> {
     public void update(Order order) {
         orderRepository.save(order);
     }
+
+    public List<Order> findByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }
 }

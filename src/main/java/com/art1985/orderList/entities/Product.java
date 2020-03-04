@@ -112,7 +112,7 @@ public class Product {
     }
 
     public BigDecimal getTotalDiscount() {
-        return price.multiply(discount);
+        return price.multiply(discount.multiply(new BigDecimal("0.01")));
     }
 
     public BigDecimal getTotalPrice() {
