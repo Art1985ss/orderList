@@ -1,0 +1,48 @@
+package com.art1985.orderList.configuration;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.sql.DataSource;
+
+@EnableWebSecurity
+public class SpringSecurity extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    DataSource dataSource;
+
+    @Autowired
+    private SimpleAuthenticationSuccessHandler successHandler;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication().dataSource(dataSource)
+                .usersByUsernameQuery("select name, password, enabled from user where email = ?")
+                .authoritiesByUsernameQuery("select s.name, a.authority from authorities a\n" +
+                        "inner join user s on a.user_id = s.id\n" +
+                        "where s.name = ?");
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().requireCsrfProtectionMatcher(new AntPathRequestMatcher("**/home")).and()
+                .authorizeRequests()
+                .antMatchers("/registration/", "/create/").permitAll()
+                .antMatchers("/user/**").hasRole("STUDENT")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .and().formLogin().successHandler(successHandler)
+                .loginPage("/home").and().logout().permitAll();
+    }
+    @Bean
+    public PasswordEncoder getPasswordEncoder(){
+        return NoOpPasswordEncoder.getInstance();
+    }
+
+}
