@@ -6,6 +6,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -99,7 +100,6 @@ public class Order {
         this.updated = updated;
     }
 
-    //TODO test logic
     public BigDecimal getTotalPrice() {
         return productListWithAmount.entrySet().stream().map(productIntegerEntry -> {
             Product product = productIntegerEntry.getKey();

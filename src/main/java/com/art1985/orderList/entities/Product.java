@@ -110,7 +110,6 @@ public class Product {
         this.updated = updated;
     }
 
-    //TODO test logic
     public BigDecimal getTotalDiscount() {
         return price.multiply(discount.multiply(new BigDecimal("0.01")));
     }
@@ -137,16 +136,11 @@ public class Product {
         Product product = (Product) o;
         return version == product.version &&
                 id.equals(product.id) &&
-                name.equals(product.name) &&
-                category == product.category &&
-                price.equals(product.price) &&
-                discount.equals(product.discount) &&
-                created.equals(product.created) &&
-                updated.equals(product.updated);
+                name.equals(product.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, category, price, discount, version, created, updated);
+        return Objects.hash(id, name);
     }
 }
