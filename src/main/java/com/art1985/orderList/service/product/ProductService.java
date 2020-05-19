@@ -58,6 +58,7 @@ public class ProductService implements IService<Product> {
 
     @Override
     public void update(Product product) {
+        product.setVersion(product.getVersion() + 1);
         productRepository.save(product);
     }
 }

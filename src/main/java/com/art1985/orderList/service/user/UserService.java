@@ -62,6 +62,7 @@ public class UserService implements IService<User> {
 
     @Override
     public void update(User user) {
+        user.setVersion(user.getVersion() + 1);
         userRepository.save(user);
     }
 }

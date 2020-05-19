@@ -59,6 +59,7 @@ public class OrderService implements IService<Order> {
 
     @Override
     public void update(Order order) {
+        order.setVersion(order.getVersion() + 1);
         orderRepository.save(order);
     }
 
