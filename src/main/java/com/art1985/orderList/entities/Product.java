@@ -34,7 +34,6 @@ public class Product {
     private LocalDate updated;
 
     public Product(String name, Category category, BigDecimal price, BigDecimal discount) {
-        this.id = id;
         this.name = name;
         this.category = category;
         this.price = price;
@@ -111,6 +110,7 @@ public class Product {
         this.updated = updated;
     }
 
+    //TODO test logic
     public BigDecimal getTotalDiscount() {
         return price.multiply(discount.multiply(new BigDecimal("0.01")));
     }

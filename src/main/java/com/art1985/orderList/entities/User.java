@@ -21,6 +21,8 @@ public class User {
     private String address;
     @Column(name = "email")
     private String email;
+    @Column(name = "password")
+    private String password;
     @Version
     @Column(name = "version")
     private int version;
@@ -81,6 +83,14 @@ public class User {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public int getVersion() {
         return version;
     }
@@ -127,12 +137,13 @@ public class User {
                 lastName.equals(user.lastName) &&
                 address.equals(user.address) &&
                 email.equals(user.email) &&
+                password.equals(user.password) &&
                 created.equals(user.created) &&
                 updated.equals(user.updated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, address, email, version, created, updated);
+        return Objects.hash(id, firstName, lastName, address, email, password, version, created, updated);
     }
 }

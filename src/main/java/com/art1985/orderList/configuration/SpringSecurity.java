@@ -34,14 +34,15 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().requireCsrfProtectionMatcher(new AntPathRequestMatcher("**/home")).and()
                 .authorizeRequests()
-                .antMatchers("/registration/", "/create/").permitAll()
-                .antMatchers("/user/**").hasRole("STUDENT")
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/products").permitAll()
+                .antMatchers("/api/v1/user/**", "/api/v1/order/**").hasRole("CLIENT")
+                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .and().formLogin().successHandler(successHandler)
-                .loginPage("/home").and().logout().permitAll();
+                .loginPage("/api/v1/home").and().logout().permitAll();
     }
+
     @Bean
-    public PasswordEncoder getPasswordEncoder(){
+    public PasswordEncoder getPasswordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 

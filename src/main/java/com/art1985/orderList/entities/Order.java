@@ -99,12 +99,21 @@ public class Order {
         this.updated = updated;
     }
 
+    //TODO test logic
     public BigDecimal getTotalPrice() {
         return productListWithAmount.entrySet().stream().map(productIntegerEntry -> {
             Product product = productIntegerEntry.getKey();
             int amount = productIntegerEntry.getValue();
             return product.getTotalPrice().multiply(new BigDecimal(amount));
         }).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void addProduct(Product product, int count) {
+        this.productListWithAmount.put(product, count);
+    }
+
+    public void removeProduct(Product product) {
+        this.productListWithAmount.remove(product);
     }
 
     @Override

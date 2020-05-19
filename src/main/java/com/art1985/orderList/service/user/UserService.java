@@ -17,7 +17,8 @@ public class UserService implements IService<User> {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
+    //TODO optionally add validation for new user creation, unique login (email)
+    //TODO test class
     @Override
     public User create(User user) {
         return userRepository.save(user);
