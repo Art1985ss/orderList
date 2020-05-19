@@ -3,7 +3,7 @@ package com.art1985.orderList.service.user;
 import com.art1985.orderList.entities.User;
 import com.art1985.orderList.repository.UserRepository;
 import com.art1985.orderList.service.IService;
-import com.art1985.orderList.service.user.exception.UserNotFoundException;
+import com.art1985.orderList.service.user.validation.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +12,18 @@ import java.util.List;
 @Service
 public class UserService implements IService<User> {
     private UserRepository userRepository;
+    private UserValidationService userValidationService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserValidationService userValidationService) {
         this.userRepository = userRepository;
+        this.userValidationService = userValidationService;
     }
 
+    //TODO test class
     @Override
     public User create(User user) {
+        userValidationService.validate(user);
         return userRepository.save(user);
     }
 

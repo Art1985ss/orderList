@@ -1,4 +1,4 @@
-package com.art1985.orderList.service.user.exception;
+package com.art1985.orderList.service.user.validation;
 
 import java.util.NoSuchElementException;
 

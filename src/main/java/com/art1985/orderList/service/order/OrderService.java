@@ -18,6 +18,7 @@ public class OrderService implements IService<Order> {
         this.orderRepository = orderRepository;
     }
 
+    //TODO test class
     @Override
     public Order create(Order order) {
         return orderRepository.save(order);
@@ -59,5 +60,9 @@ public class OrderService implements IService<Order> {
     @Override
     public void update(Order order) {
         orderRepository.save(order);
+    }
+
+    public List<Order> findByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
     }
 }
