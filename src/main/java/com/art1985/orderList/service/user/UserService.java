@@ -11,8 +11,8 @@ import java.util.List;
 
 @Service
 public class UserService implements IService<User> {
-    private UserRepository userRepository;
-    private UserValidationService userValidationService;
+    private final UserRepository userRepository;
+    private final UserValidationService userValidationService;
 
     @Autowired
     public UserService(UserRepository userRepository, UserValidationService userValidationService) {
@@ -20,7 +20,6 @@ public class UserService implements IService<User> {
         this.userValidationService = userValidationService;
     }
 
-    //TODO test class
     @Override
     public User create(User user) {
         userValidationService.validate(user);

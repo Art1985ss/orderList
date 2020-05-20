@@ -11,13 +11,13 @@ import java.util.List;
 
 @Service
 public class ProductService implements IService<Product> {
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    //TODO test class
+
     @Override
     public Product create(Product product) {
         return productRepository.save(product);
