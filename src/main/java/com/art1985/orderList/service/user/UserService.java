@@ -36,7 +36,7 @@ public class UserService implements IService<User> {
     @Override
     public User findByName(String name) {
         return userRepository.findByLastName(name)
-                .orElseThrow(() -> new UserNotFoundException("No user found with name " + name));
+                .orElseThrow(() -> new UserNotFoundException("No user found with last name " + name));
     }
 
     @Override
@@ -63,6 +63,7 @@ public class UserService implements IService<User> {
     @Override
     public void update(User user) {
         user.setVersion(user.getVersion() + 1);
+        userValidationService.validate(user);
         userRepository.save(user);
     }
 }

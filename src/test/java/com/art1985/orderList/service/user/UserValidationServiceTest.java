@@ -1,5 +1,6 @@
 package com.art1985.orderList.service.user;
 
+import com.art1985.orderList.entities.EntityCreator;
 import com.art1985.orderList.entities.User;
 import com.art1985.orderList.repository.UserRepository;
 import com.art1985.orderList.service.user.validation.*;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserValidationServiceTest {
     private static final byte MIN_LENGTH = 4;
     private static final byte MAX_LENGTH = 32;
-    private UserRepository userRepository = mock(UserRepository.class);
+    private final UserRepository userRepository = mock(UserRepository.class);
     private UserValidationService victim;
-    private Set<UserValidation> validations = new HashSet<>();
+    private final Set<UserValidation> validations = new HashSet<>();
     private User testUser;
 
     @BeforeEach
@@ -30,7 +30,7 @@ class UserValidationServiceTest {
         validations.add(new UserPasswordValidation());
         validations.add(new UserEmailValidation(userRepository));
         victim = new UserValidationService(validations);
-        testUser = createUser();
+        testUser = EntityCreator.createUser();
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
     }
 
@@ -121,20 +121,5 @@ class UserValidationServiceTest {
     @Test
     void shouldPassValidation() {
         victim.validate(testUser);
-    }
-
-
-    private User createUser() {
-        User user = new User();
-        user.setId(1L);
-        user.setFirstName("TestFirst");
-        user.setLastName("TestLast");
-        user.setAddress("TestAddress");
-        user.setEmail("Test@Email");
-        user.setPassword("TestPassword");
-        user.setVersion(1);
-        user.setCreated(LocalDate.now().minusDays(10));
-        user.setUpdated(LocalDate.now().minusDays(5));
-        return user;
     }
 }
