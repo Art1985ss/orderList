@@ -11,14 +11,13 @@ import java.util.List;
 
 @Service
 public class OrderService implements IService<Order> {
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     @Autowired
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
-    //TODO test class
     @Override
     public Order create(Order order) {
         return orderRepository.save(order);
@@ -27,13 +26,13 @@ public class OrderService implements IService<Order> {
     @Override
     public Order findById(Long id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException("Order not found with id " + id));
+                .orElseThrow(() -> new OrderNotFoundException("No order found with id " + id));
     }
 
     @Override
     public Order findByName(String name) {
         return orderRepository.findByName(name)
-                .orElseThrow(() -> new OrderNotFoundException("Order not found with name " + name));
+                .orElseThrow(() -> new OrderNotFoundException("No order found with name " + name));
     }
 
     @Override
@@ -44,7 +43,7 @@ public class OrderService implements IService<Order> {
     @Override
     public Order deleteById(Long id) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException("Order not found with id " + id + " to delete"));
+                .orElseThrow(() -> new OrderNotFoundException("No order found with id " + id + " to delete"));
         orderRepository.deleteById(order.getId());
         return order;
     }
@@ -52,13 +51,14 @@ public class OrderService implements IService<Order> {
     @Override
     public Order deleteByName(String name) {
         Order order = orderRepository.findByName(name)
-                .orElseThrow(() -> new OrderNotFoundException("Order not found with name " + name + " to delete"));
+                .orElseThrow(() -> new OrderNotFoundException("No order found with name " + name + " to delete"));
         orderRepository.deleteById(order.getId());
         return order;
     }
 
     @Override
     public void update(Order order) {
+        order.setVersion(order.getVersion() + 1);
         orderRepository.save(order);
     }
 

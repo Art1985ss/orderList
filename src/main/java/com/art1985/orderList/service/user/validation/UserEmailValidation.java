@@ -5,8 +5,12 @@ import com.art1985.orderList.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserEmailValidation implements UserValidation {
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public UserEmailValidation(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public void validate(User user) {

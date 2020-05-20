@@ -11,8 +11,8 @@ import java.util.List;
 
 @Service
 public class UserService implements IService<User> {
-    private UserRepository userRepository;
-    private UserValidationService userValidationService;
+    private final UserRepository userRepository;
+    private final UserValidationService userValidationService;
 
     @Autowired
     public UserService(UserRepository userRepository, UserValidationService userValidationService) {
@@ -20,7 +20,6 @@ public class UserService implements IService<User> {
         this.userValidationService = userValidationService;
     }
 
-    //TODO test class
     @Override
     public User create(User user) {
         userValidationService.validate(user);
@@ -36,7 +35,7 @@ public class UserService implements IService<User> {
     @Override
     public User findByName(String name) {
         return userRepository.findByLastName(name)
-                .orElseThrow(() -> new UserNotFoundException("No user found with name " + name));
+                .orElseThrow(() -> new UserNotFoundException("No user found with last name " + name));
     }
 
     @Override
@@ -62,6 +61,8 @@ public class UserService implements IService<User> {
 
     @Override
     public void update(User user) {
+        user.setVersion(user.getVersion() + 1);
+        userValidationService.validate(user);
         userRepository.save(user);
     }
 }

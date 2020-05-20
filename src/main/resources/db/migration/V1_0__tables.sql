@@ -28,7 +28,7 @@ create table if not exists Users(
     address varchar(100),
     email varchar(100),
     password varchar(100),
-    version int,
+    version int default 1,
     created timestamp not null default current_timestamp,
     updated timestamp not null default current_timestamp on update current_timestamp
 ) engine = InnoDB;

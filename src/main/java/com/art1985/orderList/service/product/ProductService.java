@@ -11,13 +11,13 @@ import java.util.List;
 
 @Service
 public class ProductService implements IService<Product> {
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    //TODO test class
+
     @Override
     public Product create(Product product) {
         return productRepository.save(product);
@@ -58,6 +58,7 @@ public class ProductService implements IService<Product> {
 
     @Override
     public void update(Product product) {
+        product.setVersion(product.getVersion() + 1);
         productRepository.save(product);
     }
 }

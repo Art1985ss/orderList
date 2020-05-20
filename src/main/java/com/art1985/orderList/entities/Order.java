@@ -99,7 +99,6 @@ public class Order {
         this.updated = updated;
     }
 
-    //TODO test logic
     public BigDecimal getTotalPrice() {
         return productListWithAmount.entrySet().stream().map(productIntegerEntry -> {
             Product product = productIntegerEntry.getKey();

@@ -9,7 +9,7 @@ public class UserLastNameValidation implements UserValidation {
     @Override
     public void validate(User user) {
         checkNull(user);
-        String LastName = user.getFirstName();
+        String LastName = user.getLastName();
         checkNameNotNull(LastName);
         checkNameMinLength(LastName);
         checkNameMaxLength(LastName);
@@ -17,16 +17,16 @@ public class UserLastNameValidation implements UserValidation {
 
     private void checkNameNotNull(String name) {
         if (name == null)
-            throw new RuntimeException("User first name should not be null!");
+            throw new RuntimeException("User last name should not be null!");
     }
 
     private void checkNameMinLength(String name) {
         if (name.length() < MIN_LENGTH)
-            throw new RuntimeException("User first name should be at least " + MIN_LENGTH + " characters long!");
+            throw new RuntimeException("User last name should be at least " + MIN_LENGTH + " characters long!");
     }
 
     private void checkNameMaxLength(String name) {
         if (name.length() > MAX_LENGTH)
-            throw new RuntimeException("User first name should not be longer than " + MAX_LENGTH + " characters long!");
+            throw new RuntimeException("User last name should not be longer than " + MAX_LENGTH + " characters long!");
     }
 }
