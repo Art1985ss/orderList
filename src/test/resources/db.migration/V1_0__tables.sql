@@ -30,8 +30,7 @@ create table if not exists Users(
     password varchar(100),
     version int default 1,
     created timestamp not null default current_timestamp,
-    updated timestamp not null default current_timestamp on update current_timestamp,
-    enabled boolean default true
+    updated timestamp not null default current_timestamp on update current_timestamp
 ) engine = InnoDB;
 
 create table if not exists Order_product_list(
@@ -53,7 +52,7 @@ CREATE TABLE IF NOT EXISTS authorities (
     user_id INT NOT NULL,
     authority VARCHAR(50),
     FOREIGN KEY (user_id)
-        REFERENCES users (id)
+        REFERENCES user (id)
         ON DELETE CASCADE
 );
 
