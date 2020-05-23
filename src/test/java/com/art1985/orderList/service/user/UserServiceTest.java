@@ -119,4 +119,19 @@ class UserServiceTest {
         verify(userValidationService, times(1)).validate(user);
         verify(userRepository, times(1)).save(user);
     }
+
+    @Test
+    public void findByEmailFail() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        Exception exception = assertThrows(UserNotFoundException.class, () -> victim.findByEmail(user.getEmail()));
+        assertEquals("No user found with email " + user.getEmail(), exception.getMessage());
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+    }
+
+    @Test
+    public void findByEmail(){
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        assertEquals(user, victim.findByEmail(user.getEmail()));
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+    }
 }

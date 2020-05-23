@@ -65,4 +65,10 @@ public class UserService implements IService<User> {
         userValidationService.validate(user);
         userRepository.save(user);
     }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(()-> new UserNotFoundException("No user found with email " + email));
+
+    }
 }
