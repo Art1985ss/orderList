@@ -65,7 +65,7 @@ public class UserController implements IController<DtoUser> {
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(String name) {
+    public ResponseEntity<Void> deleteByName(String name) {
         userService.deleteByName(name);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

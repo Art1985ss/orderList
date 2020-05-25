@@ -1,6 +1,6 @@
--- drop database test;
--- create database test;
--- use test;
+--drop database test;
+create database test;
+use test;
 create table if not exists Products(
 	id int not null auto_increment primary key,
     name varchar(100) not null,

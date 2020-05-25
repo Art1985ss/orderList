@@ -23,7 +23,7 @@ public interface IController<T> {
     ResponseEntity<Void> deleteById(@PathVariable Long id);
 
     @DeleteMapping("/")
-    ResponseEntity<Void> deleteById(@RequestParam String name);
+    ResponseEntity<Void> deleteByName(@RequestParam String name);
 
     @PutMapping
     ResponseEntity<Void> update(@RequestBody T t);

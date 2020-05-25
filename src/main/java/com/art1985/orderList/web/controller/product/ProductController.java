@@ -65,7 +65,7 @@ public class ProductController implements IController<DtoProduct> {
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(String name) {
+    public ResponseEntity<Void> deleteByName(String name) {
         productService.deleteByName(name);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

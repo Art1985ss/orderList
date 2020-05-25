@@ -65,7 +65,7 @@ public class OrderController implements IController<DtoOrder> {
     }
 
     @Override
-    public ResponseEntity<Void> deleteById(String name) {
+    public ResponseEntity<Void> deleteByName(String name) {
         orderService.deleteByName(name);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
