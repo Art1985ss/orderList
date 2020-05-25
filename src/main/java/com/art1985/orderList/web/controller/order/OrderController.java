@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/orders")
 public class OrderController implements IController<DtoOrder> {
-    private OrderService orderService;
+    private final OrderService orderService;
 
     @Autowired
     public OrderController(OrderService orderService) {

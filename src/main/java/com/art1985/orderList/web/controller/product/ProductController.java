@@ -8,6 +8,7 @@ import com.art1985.orderList.web.dto.DtoProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController implements IController<DtoProduct> {
-    private ProductService productService;
+    private final ProductService productService;
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -27,6 +28,7 @@ public class ProductController implements IController<DtoProduct> {
     }
 
     @Override
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> create(DtoProduct dtoProduct) {
         Product product = DtoConverter.fromDto(dtoProduct);
         Long id = productService.create(product).getId();
@@ -71,6 +73,7 @@ public class ProductController implements IController<DtoProduct> {
     }
 
     @Override
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> update(DtoProduct dtoProduct) {
         Product product = DtoConverter.fromDto(dtoProduct);
         productService.update(product);

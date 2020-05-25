@@ -1,9 +1,11 @@
-package com.art1985.orderList.web.controller.user;
+package com.art1985.orderList.web.controller.product;
 
 import com.art1985.orderList.OrderListApplication;
 import com.art1985.orderList.entities.EntityCreator;
-import com.art1985.orderList.entities.User;
-import com.art1985.orderList.service.user.UserService;
+import com.art1985.orderList.entities.Product;
+import com.art1985.orderList.service.product.ProductService;
+import com.art1985.orderList.web.dto.DtoConverter;
+import com.art1985.orderList.web.dto.DtoProduct;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,8 +26,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.mockito.Mockito.never;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
@@ -33,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         classes = OrderListApplication.class
 )
 @AutoConfigureMockMvc
-class UserControllerTest {
+class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -41,27 +45,27 @@ class UserControllerTest {
     @LocalServerPort
     private int port;
     @MockBean
-    private UserService userService;
-    private User user;
+    private ProductService productService;
+    private Product product;
     private String url;
 
 
     @BeforeEach
     void setUp() {
-        user = EntityCreator.createUser();
-        url = "http://localhost:" + port + "/api/v1/users";
+        product = EntityCreator.createProduct();
+        url = "http://localhost:" + port + "/api/v1/products";
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void create() throws Exception {
-        when(userService.create(user)).thenReturn(user);
+        when(productService.create(product)).thenReturn(product);
         mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(user))
-        ).andDo(print()).andExpect(status().isCreated()).andExpect(redirectedUrl(url + "/" + user.getId()));
-        verify(userService, times(1)).create(user);
+                        .content(mapper.writeValueAsBytes(product))
+        ).andDo(print()).andExpect(status().isCreated()).andExpect(redirectedUrl(url + "/" + product.getId()));
+        verify(productService, times(1)).create(product);
     }
 
     @Test
@@ -70,129 +74,119 @@ class UserControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(user))
+                        .content(mapper.writeValueAsBytes(product))
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(userService, never()).create(user);
+        verify(productService, never()).create(product);
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
     void getAll() throws Exception {
-        List<User> userList = new ArrayList<>(Collections.singletonList(user));
-        when(userService.findAll()).thenReturn(userList);
-        String json = mapper.writeValueAsString(userList);
+        List<Product> productList = new ArrayList<>(Collections.singletonList(product));
+        List<DtoProduct> dtoProductList = new ArrayList<>(Collections.singletonList(DtoConverter.toDto(product)));
+        when(productService.findAll()).thenReturn(productList);
+        String json = mapper.writeValueAsString(dtoProductList);
         mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isOk()).andExpect(content().string(json));
-        verify(userService, times(1)).findAll();
-    }
-
-    @Test
-    @WithMockUser
-    void getAllFail() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andDo(print()).andExpect(status().isForbidden());
-        verify(userService, never()).findAll();
+        verify(productService, times(1)).findAll();
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void findById() throws Exception {
-        when(userService.findById(user.getId())).thenReturn(user);
+        when(productService.findById(product.getId())).thenReturn(product);
         mockMvc.perform(
-                MockMvcRequestBuilders.get(url + "/" + user.getId())
+                MockMvcRequestBuilders.get(url + "/" + product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-        ).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(user)));
-        verify(userService, times(1)).findById(user.getId());
+        ).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(DtoConverter.toDto(product))));
+        verify(productService, times(1)).findById(product.getId());
     }
 
     @Test
     @WithMockUser
     void findByIdFail() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get(url + "/" + user.getId())
+                MockMvcRequestBuilders.get(url + "/" + product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(userService, never()).findById(user.getId());
+        verify(productService, never()).findById(product.getId());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void findByName() throws Exception {
-        when(userService.findByName(user.getLastName())).thenReturn(user);
+        when(productService.findByName(product.getName())).thenReturn(product);
         mockMvc.perform(
-                MockMvcRequestBuilders.get(url + "/?name=" + user.getLastName())
+                MockMvcRequestBuilders.get(url + "/?name=" + product.getName())
                         .contentType(MediaType.APPLICATION_JSON)
-        ).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(user)));
-        verify(userService, times(1)).findByName(user.getLastName());
+        ).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(DtoConverter.toDto(product))));
+        verify(productService, times(1)).findByName(product.getName());
     }
 
     @Test
     @WithMockUser
     void findByNameFail() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get(url + "/?name=" + user.getLastName())
+                MockMvcRequestBuilders.get(url + "/?name=" + product.getName())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(userService, never()).findByName(user.getLastName());
+        verify(productService, never()).findByName(product.getName());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void deleteById() throws Exception {
-        when(userService.deleteById(user.getId())).thenReturn(user);
+        when(productService.deleteById(product.getId())).thenReturn(product);
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(url + "/" + user.getId())
+                MockMvcRequestBuilders.delete(url + "/" + product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isNoContent());
-        verify(userService, times(1)).deleteById(user.getId());
+        verify(productService, times(1)).deleteById(product.getId());
     }
 
     @Test
     @WithMockUser
     void deleteByIdFail() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(url + "/" + user.getId())
+                MockMvcRequestBuilders.delete(url + "/" + product.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(userService, never()).deleteById(user.getId());
+        verify(productService, never()).deleteById(product.getId());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void deleteByName() throws Exception {
-        when(userService.deleteByName(user.getLastName())).thenReturn(user);
+        when(productService.deleteByName(product.getName())).thenReturn(product);
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(url + "/?name=" + user.getLastName())
+                MockMvcRequestBuilders.delete(url + "/?name=" + product.getName())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isNoContent());
-        verify(userService, times(1)).deleteByName(user.getLastName());
+        verify(productService, times(1)).deleteByName(product.getName());
     }
 
     @Test
     @WithMockUser
     void deleteByNameFail() throws Exception {
-        when(userService.deleteByName(user.getLastName())).thenReturn(user);
+        when(productService.deleteByName(product.getName())).thenReturn(product);
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(url + "/?name=" + user.getLastName())
+                MockMvcRequestBuilders.delete(url + "/?name=" + product.getName())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(userService, never()).deleteByName(user.getLastName());
+        verify(productService, never()).deleteByName(product.getName());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void update() throws Exception {
-        doNothing().when(userService).update(user);
+        doNothing().when(productService).update(product);
         mockMvc.perform(
                 MockMvcRequestBuilders.put(url)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(user))
+                        .content(mapper.writeValueAsBytes(product))
         ).andDo(print()).andExpect(status().isAccepted());
-        verify(userService, times(1)).update(user);
+        verify(productService, times(1)).update(product);
     }
 
     @Test
@@ -201,8 +195,8 @@ class UserControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.put(url)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(user))
+                        .content(mapper.writeValueAsBytes(product))
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(userService, never()).update(user);
+        verify(productService, never()).update(product);
     }
 }

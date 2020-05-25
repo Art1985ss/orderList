@@ -3,7 +3,9 @@ package com.art1985.orderList.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,6 +17,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SpringSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -34,16 +37,10 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().requireCsrfProtectionMatcher(new AntPathRequestMatcher("**/home")).and()
-//                .authorizeRequests()
-//                .antMatchers("/api/v1/products").permitAll()
-//                .antMatchers("/api/v1/user/**", "/api/v1/order/**").hasRole("USER")
-//                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
-//                .and().formLogin().successHandler(successHandler)
-//                .loginPage("/api/v1/home").and().logout().permitAll();
         http.csrf().requireCsrfProtectionMatcher(new AntPathRequestMatcher("**/home")).and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/products", "**/home").permitAll()
+                .antMatchers("**/home").permitAll()
+                .antMatchers("/api/v1/products").permitAll()
                 .antMatchers("/api/v1/user/**", "/api/v1/order/**").hasRole("USER")
                 .antMatchers("/api/v1/orders/**", "/api/v1/users/**", "/api/v1/products/**").hasRole("ADMIN")
                 .and().formLogin().successHandler(successHandler);
