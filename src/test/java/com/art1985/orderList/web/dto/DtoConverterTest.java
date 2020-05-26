@@ -37,4 +37,27 @@ class DtoConverterTest {
         DtoOrder dtoOrder = DtoConverter.toDto(order);
         assertEquals(order, DtoConverter.fromDto(dtoOrder));
     }
+
+    @Test
+    public void orderConversionWithoutUser(){
+        Order order = EntityCreator.createOrder();
+        Product product = EntityCreator.createProduct();
+        order.setUser(null);
+        order.addProduct(product, 1);
+        product = EntityCreator.createProduct();
+        product.setId(2L);
+        product.setName("TestProduct2");
+        order.addProduct(product, 1);
+        DtoOrder dtoOrder = DtoConverter.toDto(order);
+        assertEquals(order, DtoConverter.fromDto(dtoOrder));
+    }
+
+    @Test
+    public void orderConversionWithoutProducts(){
+        Order order = EntityCreator.createOrder();
+        User user = EntityCreator.createUser();
+        order.setUser(user);
+        DtoOrder dtoOrder = DtoConverter.toDto(order);
+        assertEquals(order, DtoConverter.fromDto(dtoOrder));
+    }
 }

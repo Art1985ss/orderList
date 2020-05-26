@@ -1,10 +1,13 @@
-package com.art1985.orderList.web.controller.product;
+package com.art1985.orderList.web.controller.order;
 
 import com.art1985.orderList.OrderListApplication;
 import com.art1985.orderList.entities.EntityCreator;
+import com.art1985.orderList.entities.Order;
 import com.art1985.orderList.entities.Product;
-import com.art1985.orderList.service.product.ProductService;
+import com.art1985.orderList.entities.User;
+import com.art1985.orderList.service.order.OrderService;
 import com.art1985.orderList.web.dto.DtoConverter;
+import com.art1985.orderList.web.dto.DtoOrder;
 import com.art1985.orderList.web.dto.DtoProduct;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         classes = OrderListApplication.class
 )
 @AutoConfigureMockMvc
-class ProductControllerTest {
+class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -45,27 +48,31 @@ class ProductControllerTest {
     @LocalServerPort
     private int port;
     @MockBean
-    private ProductService productService;
-    private Product product;
+    private OrderService orderService;
+    private Order order;
     private String url;
 
 
     @BeforeEach
     void setUp() {
-        product = EntityCreator.createProduct();
-        url = "http://localhost:" + port + "/api/v1/products";
+        order = EntityCreator.createOrder();
+        url = "http://localhost:" + port + "/api/v1/orders";
     }
 
+    //TODO fix exception org.springframework.web.HttpMediaTypeNotSupportedException: Content type 'application/json;charset=UTF-8' not supported
+    //don't understand why this error appears
     @Test
     @WithMockUser(roles = "ADMIN")
     void create() throws Exception {
-        when(productService.create(product)).thenReturn(product);
+        when(orderService.create(order)).thenReturn(order);
+        String json = mapper.writeValueAsString(DtoConverter.toDto(order));
+        System.out.println(json);
         mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(product))
-        ).andDo(print()).andExpect(status().isCreated()).andExpect(redirectedUrl(url + "/" + product.getId()));
-        verify(productService, times(1)).create(product);
+                        .content(json)
+        ).andDo(print()).andExpect(status().isCreated()).andExpect(redirectedUrl(url + "/" + order.getId()));
+        verify(orderService, times(1)).create(order);
     }
 
     @Test
@@ -74,119 +81,132 @@ class ProductControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(product))
+                        .content(mapper.writeValueAsString(order))
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(productService, never()).create(product);
+        verify(orderService, never()).create(order);
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void getAll() throws Exception {
-        List<Product> productList = new ArrayList<>(Collections.singletonList(product));
-        List<DtoProduct> dtoProductList = new ArrayList<>(Collections.singletonList(DtoConverter.toDto(product)));
-        when(productService.findAll()).thenReturn(productList);
-        String json = mapper.writeValueAsString(dtoProductList);
+        List<Order> orderList = new ArrayList<>(Collections.singletonList(order));
+        List<DtoOrder> dtoOrderList = new ArrayList<>(Collections.singletonList(DtoConverter.toDto(order)));
+        when(orderService.findAll()).thenReturn(orderList);
+        String json = mapper.writeValueAsString(dtoOrderList);
         mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isOk()).andExpect(content().string(json));
-        verify(productService, times(1)).findAll();
+        verify(orderService, times(1)).findAll();
+    }
+
+    @Test
+    @WithMockUser
+    void getAllFail() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andDo(print()).andExpect(status().isForbidden());
+        verify(orderService, never()).findAll();
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void findById() throws Exception {
-        when(productService.findById(product.getId())).thenReturn(product);
+        when(orderService.findById(order.getId())).thenReturn(order);
         mockMvc.perform(
-                MockMvcRequestBuilders.get(url + "/" + product.getId())
+                MockMvcRequestBuilders.get(url + "/" + order.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-        ).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(DtoConverter.toDto(product))));
-        verify(productService, times(1)).findById(product.getId());
+        ).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(DtoConverter.toDto(order))));
+        verify(orderService, times(1)).findById(order.getId());
     }
 
     @Test
     @WithMockUser
     void findByIdFail() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get(url + "/" + product.getId())
+                MockMvcRequestBuilders.get(url + "/" + order.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(productService, never()).findById(product.getId());
+        verify(orderService, never()).findById(order.getId());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void findByName() throws Exception {
-        when(productService.findByName(product.getName())).thenReturn(product);
+        when(orderService.findByName(order.getName())).thenReturn(order);
         mockMvc.perform(
-                MockMvcRequestBuilders.get(url + "/?name=" + product.getName())
+                MockMvcRequestBuilders.get(url + "/?name=" + order.getName())
                         .contentType(MediaType.APPLICATION_JSON)
-        ).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(DtoConverter.toDto(product))));
-        verify(productService, times(1)).findByName(product.getName());
+        ).andDo(print()).andExpect(status().isOk()).andExpect(content().json(mapper.writeValueAsString(DtoConverter.toDto(order))));
+        verify(orderService, times(1)).findByName(order.getName());
     }
 
     @Test
     @WithMockUser
     void findByNameFail() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get(url + "/?name=" + product.getName())
+                MockMvcRequestBuilders.get(url + "/?name=" + order.getName())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(productService, never()).findByName(product.getName());
+        verify(orderService, never()).findByName(order.getName());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void deleteById() throws Exception {
-        when(productService.deleteById(product.getId())).thenReturn(product);
+        when(orderService.deleteById(order.getId())).thenReturn(order);
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(url + "/" + product.getId())
+                MockMvcRequestBuilders.delete(url + "/" + order.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isNoContent());
-        verify(productService, times(1)).deleteById(product.getId());
+        verify(orderService, times(1)).deleteById(order.getId());
     }
 
     @Test
     @WithMockUser
     void deleteByIdFail() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(url + "/" + product.getId())
+                MockMvcRequestBuilders.delete(url + "/" + order.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(productService, never()).deleteById(product.getId());
+        verify(orderService, never()).deleteById(order.getId());
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void deleteByName() throws Exception {
-        when(productService.deleteByName(product.getName())).thenReturn(product);
+        when(orderService.deleteByName(order.getName())).thenReturn(order);
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(url + "/?name=" + product.getName())
+                MockMvcRequestBuilders.delete(url + "/?name=" + order.getName())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isNoContent());
-        verify(productService, times(1)).deleteByName(product.getName());
+        verify(orderService, times(1)).deleteByName(order.getName());
     }
 
     @Test
     @WithMockUser
     void deleteByNameFail() throws Exception {
-        when(productService.deleteByName(product.getName())).thenReturn(product);
+        when(orderService.deleteByName(order.getName())).thenReturn(order);
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(url + "/?name=" + product.getName())
+                MockMvcRequestBuilders.delete(url + "/?name=" + order.getName())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(productService, never()).deleteByName(product.getName());
+        verify(orderService, never()).deleteByName(order.getName());
     }
 
+    //TODO fix exception org.springframework.web.HttpMediaTypeNotSupportedException: Content type 'application/json;charset=UTF-8' not supported
+    //don't understand why this error appears
     @Test
     @WithMockUser(roles = "ADMIN")
     void update() throws Exception {
-        doNothing().when(productService).update(product);
+        doNothing().when(orderService).update(order);
         mockMvc.perform(
                 MockMvcRequestBuilders.put(url)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(product))
+                        .content(mapper.writeValueAsString(order))
         ).andDo(print()).andExpect(status().isAccepted());
-        verify(productService, times(1)).update(product);
+        verify(orderService, times(1)).update(order);
     }
 
     @Test
@@ -195,8 +215,8 @@ class ProductControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.put(url)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(product))
+                        .content(mapper.writeValueAsString(order))
         ).andDo(print()).andExpect(status().isForbidden());
-        verify(productService, never()).update(product);
+        verify(orderService, never()).update(order);
     }
 }

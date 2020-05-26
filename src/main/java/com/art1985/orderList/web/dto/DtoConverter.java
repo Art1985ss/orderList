@@ -40,7 +40,8 @@ public class DtoConverter {
         DtoOrder dtoOrder = new DtoOrder();
         dtoOrder.setId(order.getId());
         dtoOrder.setName(order.getName());
-        dtoOrder.setUser(toDto(order.getUser()));
+        if (order.getUser() == null) dtoOrder.setUser(null);
+        else dtoOrder.setUser(toDto(order.getUser()));
         dtoOrder.setProductListWithAmount(order.getProductListWithAmount().entrySet().stream()
                 .collect(Collectors.toMap(
                         (entry) -> DtoConverter.toDto(entry.getKey()),
@@ -56,7 +57,8 @@ public class DtoConverter {
         Order order = new Order();
         order.setId(dtoOrder.getId());
         order.setName(dtoOrder.getName());
-        order.setUser(fromDto(dtoOrder.getUser()));
+        if (dtoOrder.getUser() == null) order.setUser(null);
+        else order.setUser(fromDto(dtoOrder.getUser()));
         order.setProductListWithAmount(dtoOrder.getProductListWithAmount().entrySet().stream()
                 .collect(Collectors.toMap(
                         (entry) -> DtoConverter.fromDto(entry.getKey()),

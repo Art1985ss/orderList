@@ -132,15 +132,11 @@ public class Order {
         Order order = (Order) o;
         return version == order.version &&
                 id.equals(order.id) &&
-                name.equals(order.name) &&
-                user.equals(order.user) &&
-                Objects.equals(productListWithAmount, order.productListWithAmount) &&
-                created.equals(order.created) &&
-                updated.equals(order.updated);
+                name.equals(order.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, user, productListWithAmount, version, created, updated);
+        return Objects.hash(id, name, version);
     }
 }
