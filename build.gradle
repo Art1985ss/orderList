@@ -54,3 +54,15 @@ asciidoctor {
 	inputs.dir snippetsDir
 	dependsOn test
 }
+
+plugins {
+  id "org.sonarqube" version "3.3"
+}
+
+sonarqube {
+  properties {
+    property "sonar.projectKey", "Art1985ss_orderList"
+    property "sonar.organization", "art1985ss"
+    property "sonar.host.url", "https://sonarcloud.io"
+  }
+}
